@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AwesomeBlogBackEnd.Models
+namespace AwesomeBlogDTO
 {
-    public class Blog
+    public class Post
     {
         public int Id { get; set; }
 
@@ -15,9 +15,9 @@ namespace AwesomeBlogBackEnd.Models
         public string Title { get; set; }
 
         [Required]
-        [StringLength(10000)]
+        [StringLength(4000)]
         public string Body { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime Published { get; set; }
     }
 }

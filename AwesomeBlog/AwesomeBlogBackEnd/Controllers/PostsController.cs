@@ -11,27 +11,27 @@ namespace AwesomeBlogBackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogsController : ControllerBase
+    public class PostsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public BlogsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Blogs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Blog>>> GetBlogs()
+        public async Task<ActionResult<IEnumerable<Post>>> GetBlogs()
         {
-            return await _context.Blogs.ToListAsync();
+            return await _context.Posts.ToListAsync();
         }
 
         // GET: api/Blogs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Blog>> GetBlog(int id)
+        public async Task<ActionResult<Post>> GetBlog(int id)
         {
-            var blog = await _context.Blogs.FindAsync(id);
+            var blog = await _context.Posts.FindAsync(id);
 
             if (blog == null)
             {
@@ -45,7 +45,7 @@ namespace AwesomeBlogBackEnd.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBlog(int id, Blog blog)
+        public async Task<IActionResult> PutBlog(int id, Post blog)
         {
             if (id != blog.Id)
             {
@@ -77,9 +77,9 @@ namespace AwesomeBlogBackEnd.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Blog>> PostBlog(Blog blog)
+        public async Task<ActionResult<Post>> PostBlog(Post blog)
         {
-            _context.Blogs.Add(blog);
+            _context.Posts.Add(blog);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBlog", new { id = blog.Id }, blog);
@@ -87,15 +87,15 @@ namespace AwesomeBlogBackEnd.Controllers
 
         // DELETE: api/Blogs/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Blog>> DeleteBlog(int id)
+        public async Task<ActionResult<Post>> DeleteBlog(int id)
         {
-            var blog = await _context.Blogs.FindAsync(id);
+            var blog = await _context.Posts.FindAsync(id);
             if (blog == null)
             {
                 return NotFound();
             }
 
-            _context.Blogs.Remove(blog);
+            _context.Posts.Remove(blog);
             await _context.SaveChangesAsync();
 
             return blog;
@@ -103,7 +103,7 @@ namespace AwesomeBlogBackEnd.Controllers
 
         private bool BlogExists(int id)
         {
-            return _context.Blogs.Any(e => e.Id == id);
+            return _context.Posts.Any(e => e.Id == id);
         }
     }
 }
