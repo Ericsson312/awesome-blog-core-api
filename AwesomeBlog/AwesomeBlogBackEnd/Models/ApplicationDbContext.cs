@@ -14,7 +14,14 @@ namespace AwesomeBlogBackEnd.Models
             
         }
 
-        public DbSet<Post> Posts { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Blogger>()
+                .HasIndex(name => name.Name)
+                .IsUnique();
+        }
+
+        public DbSet<Article> Articles { get; set; }
 
         public DbSet<Blogger> Bloggers { get; set; }
 

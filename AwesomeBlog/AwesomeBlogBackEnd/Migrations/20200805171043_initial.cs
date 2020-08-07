@@ -3,13 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AwesomeBlogBackEnd.Migrations
 {
-    public partial class refactor : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Blogs");
-
             migrationBuilder.CreateTable(
                 name: "Bloggers",
                 columns: table => new
@@ -26,28 +23,7 @@ namespace AwesomeBlogBackEnd.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(maxLength: 1000, nullable: false),
-                    Published = table.Column<DateTime>(nullable: false),
-                    BloggerId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comments_Bloggers_BloggerId",
-                        column: x => x.BloggerId,
-                        principalTable: "Bloggers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Posts",
+                name: "Articles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -59,24 +35,52 @@ namespace AwesomeBlogBackEnd.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_Bloggers_BloggerId",
+                        name: "FK_Articles_Bloggers_BloggerId",
                         column: x => x.BloggerId,
                         principalTable: "Bloggers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthorId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(maxLength: 1000, nullable: false),
+                    Published = table.Column<DateTime>(nullable: false),
+                    ArticleId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_BloggerId",
-                table: "Comments",
+                name: "IX_Articles_BloggerId",
+                table: "Articles",
                 column: "BloggerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_BloggerId",
-                table: "Posts",
-                column: "BloggerId");
+                name: "IX_Bloggers_Name",
+                table: "Bloggers",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_ArticleId",
+                table: "Comments",
+                column: "ArticleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -85,25 +89,10 @@ namespace AwesomeBlogBackEnd.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Articles");
 
             migrationBuilder.DropTable(
                 name: "Bloggers");
-
-            migrationBuilder.CreateTable(
-                name: "Blogs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Body = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Blogs", x => x.Id);
-                });
         }
     }
 }

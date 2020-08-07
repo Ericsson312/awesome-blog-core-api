@@ -7,6 +7,6 @@ namespace AwesomeBlogBackEnd.Models
 {
     public class Comment : AwesomeBlogDTO.Comment
     {
-        public Blogger Blogger { get; set; }
+
     }
 }

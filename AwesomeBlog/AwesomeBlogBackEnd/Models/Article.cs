@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace AwesomeBlogBackEnd.Models
 {
-    public class Post : AwesomeBlogDTO.Post
+    public class Article : AwesomeBlogDTO.Article
     {
-        public Blogger Blogger { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

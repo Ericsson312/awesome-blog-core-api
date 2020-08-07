@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AwesomeBlogBackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200731193933_refactor")]
-    partial class refactor
+    [Migration("20200805171043_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,59 +21,7 @@ namespace AwesomeBlogBackEnd.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Blogger", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Bloggers");
-                });
-
-            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("BloggerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
-
-                    b.Property<DateTime>("Published")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BloggerId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Post", b =>
+            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Article", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,21 +48,79 @@ namespace AwesomeBlogBackEnd.Migrations
 
                     b.HasIndex("BloggerId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Articles");
+                });
+
+            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Blogger", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)")
+                        .HasMaxLength(1000);
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Bloggers");
                 });
 
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Comment", b =>
                 {
-                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", "Blogger")
-                        .WithMany()
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)")
+                        .HasMaxLength(1000);
+
+                    b.Property<DateTime>("Published")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Article", b =>
+                {
+                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", null)
+                        .WithMany("Articles")
                         .HasForeignKey("BloggerId");
                 });
 
-            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Post", b =>
+            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Comment", b =>
                 {
-                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", "Blogger")
-                        .WithMany()
-                        .HasForeignKey("BloggerId");
+                    b.HasOne("AwesomeBlogBackEnd.Models.Article", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("ArticleId");
                 });
 #pragma warning restore 612, 618
         }

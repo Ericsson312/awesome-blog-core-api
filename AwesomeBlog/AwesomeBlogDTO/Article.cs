@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AwesomeBlogDTO
 {
-    public class Post
+    public class Article
     {
         public int Id { get; set; }
 
