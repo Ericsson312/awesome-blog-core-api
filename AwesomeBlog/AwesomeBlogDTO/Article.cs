@@ -19,5 +19,7 @@ namespace AwesomeBlogDTO
         public string Body { get; set; }
 
         public DateTime Published { get; set; }
+
+        public int BloggerId { get; set; }
     }
 }

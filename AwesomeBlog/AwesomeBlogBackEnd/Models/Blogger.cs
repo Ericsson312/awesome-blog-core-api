@@ -8,5 +8,7 @@ namespace AwesomeBlogBackEnd.Models
     public class Blogger : AwesomeBlogDTO.Blogger
     {
         public virtual ICollection<Article> Articles { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

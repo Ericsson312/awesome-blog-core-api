@@ -4,14 +4,16 @@ using AwesomeBlogBackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AwesomeBlogBackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200810112204_refactor")]
+    partial class refactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,15 +153,12 @@ namespace AwesomeBlogBackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Article", b =>
                 {
-                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", null)
+                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", "Blogger")
                         .WithMany("Articles")
                         .HasForeignKey("BloggerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -183,13 +182,13 @@ namespace AwesomeBlogBackEnd.Migrations
 
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Comment", b =>
                 {
-                    b.HasOne("AwesomeBlogBackEnd.Models.Article", null)
+                    b.HasOne("AwesomeBlogBackEnd.Models.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", null)
+                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", "Blogger")
                         .WithMany("Comments")
                         .HasForeignKey("BloggerId")
                         .OnDelete(DeleteBehavior.Cascade)

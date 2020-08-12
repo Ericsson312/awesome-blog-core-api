@@ -4,14 +4,16 @@ using AwesomeBlogBackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AwesomeBlogBackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200809162025_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,30 +78,22 @@ namespace AwesomeBlogBackEnd.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasMaxLength(1000);
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("NickName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("NickName")
                         .IsUnique();
@@ -151,15 +145,12 @@ namespace AwesomeBlogBackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Article", b =>
                 {
-                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", null)
+                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", "Blogger")
                         .WithMany("Articles")
                         .HasForeignKey("BloggerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -183,13 +174,13 @@ namespace AwesomeBlogBackEnd.Migrations
 
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Comment", b =>
                 {
-                    b.HasOne("AwesomeBlogBackEnd.Models.Article", null)
+                    b.HasOne("AwesomeBlogBackEnd.Models.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", null)
+                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", "Blogger")
                         .WithMany("Comments")
                         .HasForeignKey("BloggerId")
                         .OnDelete(DeleteBehavior.Cascade)

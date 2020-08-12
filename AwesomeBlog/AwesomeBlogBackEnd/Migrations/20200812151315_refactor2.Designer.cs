@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AwesomeBlogBackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200805171043_initial")]
-    partial class initial
+    [Migration("20200812151315_refactor2")]
+    partial class refactor2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,7 +28,7 @@ namespace AwesomeBlogBackEnd.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BloggerId")
+                    b.Property<int>("BloggerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Body")
@@ -51,6 +51,21 @@ namespace AwesomeBlogBackEnd.Migrations
                     b.ToTable("Articles");
                 });
 
+            modelBuilder.Entity("AwesomeBlogBackEnd.Models.ArticleTag", b =>
+                {
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticleId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ArticleTag");
+                });
+
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Blogger", b =>
                 {
                     b.Property<int>("Id")
@@ -63,19 +78,32 @@ namespace AwesomeBlogBackEnd.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasMaxLength(1000);
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(150)")
+                        .HasMaxLength(150);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("NickName")
                         .IsUnique();
 
                     b.ToTable("Bloggers");
@@ -88,10 +116,10 @@ namespace AwesomeBlogBackEnd.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ArticleId")
+                    b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int>("BloggerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -106,21 +134,68 @@ namespace AwesomeBlogBackEnd.Migrations
 
                     b.HasIndex("ArticleId");
 
+                    b.HasIndex("BloggerId");
+
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("AwesomeBlogBackEnd.Models.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Article", b =>
                 {
                     b.HasOne("AwesomeBlogBackEnd.Models.Blogger", null)
                         .WithMany("Articles")
-                        .HasForeignKey("BloggerId");
+                        .HasForeignKey("BloggerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AwesomeBlogBackEnd.Models.ArticleTag", b =>
+                {
+                    b.HasOne("AwesomeBlogBackEnd.Models.Article", "Article")
+                        .WithMany("ArticleTags")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AwesomeBlogBackEnd.Models.Tag", "Tag")
+                        .WithMany("ArticleTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AwesomeBlogBackEnd.Models.Comment", b =>
                 {
                     b.HasOne("AwesomeBlogBackEnd.Models.Article", null)
                         .WithMany("Comments")
-                        .HasForeignKey("ArticleId");
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AwesomeBlogBackEnd.Models.Blogger", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("BloggerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

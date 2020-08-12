@@ -17,8 +17,20 @@ namespace AwesomeBlogBackEnd.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Blogger>()
-                .HasIndex(name => name.Name)
+                .HasIndex(n => n.NickName)
                 .IsUnique();
+
+            modelBuilder.Entity<Blogger>()
+                .HasIndex(n => n.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Tag>()
+                .HasIndex(t => t.Name)
+                .IsUnique();
+
+            // Many-to-many: Article <-> Tag
+            modelBuilder.Entity<ArticleTag>()
+                    .HasKey(at => new { at.ArticleId, at.TagId });
         }
 
         public DbSet<Article> Articles { get; set; }
@@ -26,5 +38,7 @@ namespace AwesomeBlogBackEnd.Models
         public DbSet<Blogger> Bloggers { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
+
+        public DbSet<Tag> Tags { get; set; }
     }
 }

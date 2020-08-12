@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AwesomeBlogBackEnd.Models;
+using AwesomeBlogBackEnd.Infrastructure;
 
 namespace AwesomeBlogBackEnd.Controllers
 {
@@ -20,85 +21,153 @@ namespace AwesomeBlogBackEnd.Controllers
             _context = context;
         }
 
-        // GET: api/Articles
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Article>>> GetArticles()
-        {
-            return await _context.Articles.ToListAsync();
-        }
-
-        // GET: api/Articles/5
+        // GET: api/articles/1
         [HttpGet("{id}")]
-        public async Task<ActionResult<Article>> GetArticle(int id)
+        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> GetArticle(int id)
         {
-            var article = await _context.Articles.FindAsync(id);
-
-            if (article == null)
+            if (!ArticleExists(id))
             {
                 return NotFound();
             }
 
-            return article;
+            var article = await _context.Articles.AsNoTracking()
+                .Include(a => a.Comments)
+                .Include(a => a.ArticleTags)
+                    .ThenInclude(at => at.Tag)
+                .SingleOrDefaultAsync(a => a.Id == id);
+
+            var result = article.MapArticleResponse();
+
+            return result;
         }
 
-        // PUT: api/Articles/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        // PUT: api/articles/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticle(int id, Article article)
+        public async Task<IActionResult> PutArticle(int id, AwesomeBlogDTO.Article input)
         {
-            if (id != article.Id)
+            if (!ArticleExists(id))
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(article).State = EntityState.Modified;
+            var article = await _context.Articles.FindAsync(id);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArticleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            article.Title = input.Title;
+            article.Body = input.Body;
+            article.Published = input.Published;
+            article.BloggerId = input.BloggerId;
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // POST: api/Articles
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Article>> PostArticle(Article article)
+        // POST: api/articles/2
+        [HttpPost("{bloggerId}")]
+        public async Task<ActionResult<AwesomeBlogDTO.Article>> PostArticle(int bloggerId, AwesomeBlogDTO.Article input)
         {
+
+            var blogger = await _context.Bloggers.FindAsync(bloggerId);
+
+            if (blogger == null)
+            {
+                return NotFound();
+            }
+
+            var article = new Article
+            {
+                Title = input.Title,
+                Body = input.Body,
+                Published = input.Published,
+                BloggerId = bloggerId
+            };
+
             _context.Articles.Add(article);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetArticle", new { id = article.Id }, article);
+            return article;
         }
 
-        // DELETE: api/Articles/5
+        // POST: api/articles/2/tags/2
+        [HttpPost("{articleId}/tags/{tagId}")]
+        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> AddTag(int articleId, int tagId)
+        {
+
+            var article = await _context.Articles.Include(a => a.ArticleTags)
+                    .ThenInclude(at => at.Tag)
+                .SingleOrDefaultAsync(a => a.Id == articleId);
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            var tag = await _context.Tags.FindAsync(tagId);
+
+            if (tag == null)
+            {
+                return BadRequest();
+            }
+
+            article.ArticleTags.Add(new ArticleTag
+            {
+                ArticleId = article.Id,
+                TagId = tag.Id
+            });
+            await _context.SaveChangesAsync();
+
+            var result = article.MapArticleResponse();
+
+            return result;
+        }
+
+        // POST: api/articles/2/tags/2
+        [HttpDelete("{articleId}/tags/{tagId}")]
+        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> RemoveTag(int articleId, int tagId)
+        {
+
+            var article = await _context.Articles.Include(a => a.ArticleTags)
+                .SingleOrDefaultAsync(a => a.Id == articleId);
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            var tag = await _context.Tags.FindAsync(tagId);
+
+            if (tag == null)
+            {
+                return BadRequest();
+            }
+
+            var articleTag = article.ArticleTags.FirstOrDefault(at => at.TagId == tagId);
+            article.ArticleTags.Remove(articleTag);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // DELETE: api/articles/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Article>> DeleteArticle(int id)
+        public async Task<ActionResult<AwesomeBlogDTO.Article>> DeleteArticle(int id)
         {
             var article = await _context.Articles.FindAsync(id);
             if (article == null)
             {
                 return NotFound();
+            }
+
+            if (article.Comments != null)
+            {
+                _context.Comments.RemoveRange(article.Comments);
             }
 
             _context.Articles.Remove(article);
             await _context.SaveChangesAsync();
 
-            return article;
+            return NoContent();
         }
 
         private bool ArticleExists(int id)
