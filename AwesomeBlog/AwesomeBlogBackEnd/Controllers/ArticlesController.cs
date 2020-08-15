@@ -21,6 +21,24 @@ namespace AwesomeBlogBackEnd.Controllers
             _context = context;
         }
 
+        // GET: api/articles
+        [HttpGet]
+        public async Task<ActionResult<List<AwesomeBlogDTO.Article>>> GetArticles()
+        {
+            var articles = await _context.Articles.AsNoTracking()
+                .Select(a => new AwesomeBlogDTO.Article
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Body = a.Body,
+                    BloggerId = a.BloggerId,
+                    Published = a.Published
+                })
+                .ToListAsync();
+
+            return articles;
+        }
+
         // GET: api/articles/1
         [HttpGet("{id}")]
         public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> GetArticle(int id)
@@ -121,7 +139,60 @@ namespace AwesomeBlogBackEnd.Controllers
             return result;
         }
 
-        // POST: api/articles/2/tags/2
+        // POST: api/articles/2/comments
+        [HttpPost("{articleId}/comments")]
+        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> AddComment(int articleId, AwesomeBlogDTO.Comment comment)
+        {
+
+            var article = await _context.Articles.Include(c => c.Comments).FirstOrDefaultAsync();
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            article.Comments.Add(new Comment
+            {
+                Content = comment.Content,
+                ArticleId = articleId,
+                BloggerId = comment.BloggerId
+            });
+
+            await _context.SaveChangesAsync();
+
+            var result = article.MapArticleResponse();
+
+            return result;
+        }
+
+        // DELETE: api/articles/2/comments/2
+        [HttpDelete("{articleId}/comments/{commentId}")]
+        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> RemoveComment(int articleId, int commentId)
+        {
+
+            var article = await _context.Articles.FindAsync(articleId);
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments.FindAsync(commentId);
+
+            if (comment == null)
+            {
+                return BadRequest();
+            }
+
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+
+            var result = article.MapArticleResponse();
+
+            return result;
+        }
+
+        // DELETE: api/articles/2/tags/2
         [HttpDelete("{articleId}/tags/{tagId}")]
         public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> RemoveTag(int articleId, int tagId)
         {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AwesomeBlogBackEnd.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AwesomeBlogBackEnd.Controllers
 {
@@ -17,6 +18,37 @@ namespace AwesomeBlogBackEnd.Controllers
         public TagsController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        // GET: api/tags
+        [HttpGet]
+        public async Task<ActionResult<List<AwesomeBlogDTO.Tag>>> GetTags()
+        {
+            var tags = await _context.Tags.AsNoTracking()
+                .Select(t => new AwesomeBlogDTO.Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name
+                })
+                .ToListAsync();
+
+            return tags;
+        }
+
+        // GET: api/tags/popular
+        [HttpGet("popular")]
+        public async Task<ActionResult<List<AwesomeBlogDTO.Tag>>> GetPopularTags()
+        {
+            var tags = await _context.Tags.OrderByDescending(t => t.ArticleTags.Count)
+                .Take(5)
+                .Select(t => new AwesomeBlogDTO.Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name
+                })
+                .ToListAsync();
+
+            return tags;
         }
 
         // POST: api/tags

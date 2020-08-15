@@ -4,7 +4,34 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="articles">
+        <div class="articles-header">
+            <h5>People looking for:</h5>
+        </div>
+        <div class="articles-body">
+            <ul class="nav nav-pills mb-3">
+            @foreach (var tag in Model.Tags)
+            {
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link" asp-route-tag="@tag.Id">#@tag.Name?.ToString()</a>
+                </li>
+            }
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
