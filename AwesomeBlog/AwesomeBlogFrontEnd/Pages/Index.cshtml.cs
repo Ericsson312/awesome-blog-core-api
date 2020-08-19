@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AwesomeBlogDTO;
 using AwesomeBlogFrontEnd.Services;
@@ -27,9 +28,15 @@ namespace AwesomeBlogFrontEnd.Pages
         [BindProperty]
         public IEnumerable<Tag> Tags { get; private set; }
 
+        [BindProperty]
+        public bool IsAdmin { get; set; }
+
         public async Task OnGetAsync()
         {
+            IsAdmin = User.IsAdmin();
+
             Tags = await _apiClient.GetTagsPopularAsync();
+
             Articles = (await _apiClient.GetArticlesAsync()).OrderByDescending(a => a.Published);
         }
     }

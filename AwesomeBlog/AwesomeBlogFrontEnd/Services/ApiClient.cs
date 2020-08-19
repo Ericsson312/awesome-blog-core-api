@@ -95,7 +95,21 @@ namespace AwesomeBlogFrontEnd.Services
             return await response.Content.ReadAsAsync<List<Article>>();
         }
 
-        public async Task<BloggerResponse> GetBloggerAsync(string name)
+        public async Task<BloggerResponse> GetBloggerAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/bloggers/{id}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsAsync<BloggerResponse>();
+        }
+
+        public async Task<BloggerResponse> GetBloggerByNameAsync(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -130,6 +144,25 @@ namespace AwesomeBlogFrontEnd.Services
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsAsync<List<Tag>>();
+        }
+
+        public async Task PutArticleAsync(Article article)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/articles/{article.Id}", article);
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task RemoveAllTags(int articleId)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/articles/{articleId}/tags/all");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task RemoveComment(int articleId, int commentId)

@@ -194,7 +194,7 @@ namespace AwesomeBlogBackEnd.Controllers
 
         // DELETE: api/articles/2/tags/2
         [HttpDelete("{articleId}/tags/{tagId}")]
-        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> RemoveTag(int articleId, int tagId)
+        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> RemoveTags(int articleId, int tagId)
         {
 
             var article = await _context.Articles.Include(a => a.ArticleTags)
@@ -214,6 +214,26 @@ namespace AwesomeBlogBackEnd.Controllers
 
             var articleTag = article.ArticleTags.FirstOrDefault(at => at.TagId == tagId);
             article.ArticleTags.Remove(articleTag);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // DELETE: api/articles/2/tags/all
+        [HttpDelete("{articleId}/tags/all")]
+        public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> RemoveTags(int articleId)
+        {
+
+            var article = await _context.Articles.Include(a => a.ArticleTags)
+                .SingleOrDefaultAsync(a => a.Id == articleId);
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            article.ArticleTags = null;
 
             await _context.SaveChangesAsync();
 

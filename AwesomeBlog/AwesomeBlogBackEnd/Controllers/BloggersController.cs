@@ -38,9 +38,9 @@ namespace AwesomeBlogBackEnd.Controllers
             return bloggers;
         }
 
-        // GET: api/bloggers/bob911
-        [HttpGet("{name}")]
-        public async Task<ActionResult<AwesomeBlogDTO.BloggerResponse>> GetBlogger(string name)
+        // GET: api/bloggers/find/bob911
+        [HttpGet("find/{name}")]
+        public async Task<ActionResult<AwesomeBlogDTO.BloggerResponse>> GetBloggerByName(string name)
         {
             var blogger = await _context.Bloggers.AsNoTracking()
                 .Include(a => a.Articles)
@@ -71,6 +71,38 @@ namespace AwesomeBlogBackEnd.Controllers
             };
         }
 
+        // GET: api/bloggers/3
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AwesomeBlogDTO.BloggerResponse>> GetBloggerById(int id)
+        {
+            var blogger = await _context.Bloggers.AsNoTracking()
+                .Include(a => a.Articles)
+                .SingleOrDefaultAsync(n => n.Id == id);
+
+            if (blogger == null)
+            {
+                return NotFound();
+            }
+
+            return new AwesomeBlogDTO.BloggerResponse
+            {
+                Id = blogger.Id,
+                Name = blogger.Name,
+                LastName = blogger.LastName,
+                NickName = blogger.NickName,
+                Email = blogger.Email,
+                Bio = blogger.Bio,
+                Articles = blogger.Articles?
+                .Select(a => new AwesomeBlogDTO.Article
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Body = a.Body,
+                    Published = a.Published,
+                    BloggerId = a.BloggerId
+                }).ToList()
+            };
+        }
 
         // PUT: api/bloggers/5
         [HttpPut("{id}")]

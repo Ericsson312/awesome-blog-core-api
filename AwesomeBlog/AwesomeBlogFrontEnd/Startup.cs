@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using AwesomeBlogFrontEnd.Data;
 using AwesomeBlogFrontEnd.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,6 +32,25 @@ namespace AwesomeBlogFrontEnd
             {
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
+
+            services.AddDbContext<IdentityDbContext>(options =>
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("IdentityDbContextConnection"));
+                }
+            });
+
+            services.AddSingleton<IAdminService, AdminService>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireAuthenticatedUser()
+                          .RequireIsAdminClaim();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +72,7 @@ namespace AwesomeBlogFrontEnd
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

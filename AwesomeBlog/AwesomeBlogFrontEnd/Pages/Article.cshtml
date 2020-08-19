@@ -1,0 +1,39 @@
+﻿@page "{id}"
+@model AwesomeBlogFrontEnd.ArticleModel
+@{
+    ViewData["Title"] = "Article";
+}
+
+<div class="resent-articles">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>@Model.Article.Title</h3>
+                <br />
+                <h5><small>Publeshed by @Model.Blogger.NickName @Model.Article.Published.ToString("MMMM dd, yyyy.")</small></h5>
+                <ul class="nav nav-pills mb-3">
+                    @foreach (var tag in Model.Article.Tags)
+                    {
+                        <li role="presentation" class="nav-item">
+                            <a class="nav-link" asp-route-tag="@tag.Id">#@tag.Name?.ToString()</a>
+                        </li>
+                    }
+                </ul>
+                <p class="card-text">@Model.Article.Body</p>
+                <br />
+                <br />
+                <h5><small>Leave a comment</small></h5>
+                <form role="form">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+                <br><br>
+                <p>Comments:</p>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+
