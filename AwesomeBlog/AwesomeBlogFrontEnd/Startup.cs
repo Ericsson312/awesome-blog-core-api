@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AwesomeBlogFrontEnd.Data;
+using AwesomeBlogFrontEnd.Middleware;
 using AwesomeBlogFrontEnd.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -74,6 +75,8 @@ namespace AwesomeBlogFrontEnd
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<RequireLoginMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

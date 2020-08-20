@@ -8,6 +8,7 @@ using AwesomeBlogFrontEnd.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace AwesomeBlogFrontEnd
 {
@@ -36,29 +37,69 @@ namespace AwesomeBlogFrontEnd
 
         public async Task<ActionResult> OnGetAsync(int id)
         {
-            var article = await _apiClient.GetArticleAsync(id);
-
-            Article = new Article
+            if (User.Identity.IsAuthenticated)
             {
-                Id = article.Id,
-                Title = article.Title,
-                Body = article.Body,
-                Published = article.Published,
-                BloggerId = article.BloggerId
-            };
+                var blogger = await _apiClient.GetBloggerByNameAsync(User.Identity.Name);
 
-            var tags = await _apiClient.GetTagsAsync();
+                var isOwner = blogger.Articles.Where(a => a.Id == id).Any();
 
-            TagsToSelect = tags.Select(t => new SelectListItem
-            {
-                Value = t.Id.ToString(),
-                Text = t.Name
-            }).ToList();
+                if ((!isOwner && !User.IsAdmin()))
+                {
+                    return RedirectToPage("./Index");
+                }
 
-            foreach (var tag in article.Tags)
-            {
-                SelectedTagsId.Add(tag.Id);
+                var article = await _apiClient.GetArticleAsync(id);
+
+                Article = new Article
+                {
+                    Id = article.Id,
+                    BloggerId = article.BloggerId,
+                    Title = article.Title,
+                    Body = article.Body,
+                    Published = article.Published
+                };
+
+                var tags = await _apiClient.GetTagsAsync();
+
+                TagsToSelect = tags.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Name
+                }).ToList();
+
+                foreach (var tag in article.Tags)
+                {
+                    SelectedTagsId.Add(tag.Id);
+                }
             }
+            else
+            {
+                RedirectToPage("./Login");
+            }
+
+            //var article = await _apiClient.GetArticleAsync(id);
+
+            //Article = new Article
+            //{
+            //    Id = article.Id,
+            //    Title = article.Title,
+            //    Body = article.Body,
+            //    Published = article.Published,
+            //    BloggerId = article.BloggerId
+            //};
+
+            //var tags = await _apiClient.GetTagsAsync();
+
+            //TagsToSelect = tags.Select(t => new SelectListItem
+            //{
+            //    Value = t.Id.ToString(),
+            //    Text = t.Name
+            //}).ToList();
+
+            //foreach (var tag in article.Tags)
+            //{
+            //    SelectedTagsId.Add(tag.Id);
+            //}
 
             return Page();
         }

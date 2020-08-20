@@ -27,6 +27,15 @@ namespace System.Security.Claims
 
         public static void MakeAdmin(this ClaimsIdentity identity) =>
             identity.AddClaim(new Claim(AuthConstants.IsAdmin, AuthConstants.TrueValue));
+
+        public static bool IsBlogger(this ClaimsPrincipal principal) =>
+            principal.HasClaim(AuthConstants.IsAttendee, AuthConstants.TrueValue);
+
+        public static void MakeBlogger(this ClaimsPrincipal principal) =>
+            principal.Identities.First().MakeBlogger();
+
+        public static void MakeBlogger(this ClaimsIdentity identity) =>
+            identity.AddClaim(new Claim(AuthConstants.IsAttendee, AuthConstants.TrueValue));
     }
 }
 

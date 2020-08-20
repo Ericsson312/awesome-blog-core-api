@@ -29,6 +29,13 @@ namespace AwesomeBlogFrontEnd.Areas.Identity
                 identity.MakeAdmin();
             }
 
+            var blogger = await _apiClient.GetBloggerByNameAsync(user.UserName);
+
+            if (blogger != null)
+            {
+                identity.MakeBlogger();
+            }
+
             return identity;
         }
     }

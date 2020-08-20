@@ -32,6 +32,20 @@ namespace AwesomeBlogFrontEnd.Services
             return true;
         }
 
+        public async Task<bool> AddBloggerAsync(Blogger blogger)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"/api/bloggers", blogger);
+
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                return false;
+            }
+
+            //response.EnsureSuccessStatusCode();
+
+            return true;
+        }
+
         public async Task<bool> AddComment(int articleId, Comment comment)
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/articles/{articleId}/comments", comment);
@@ -116,7 +130,7 @@ namespace AwesomeBlogFrontEnd.Services
                 return null;
             }
 
-            var response = await _httpClient.GetAsync($"/api/bloggers/{name}");
+            var response = await _httpClient.GetAsync($"/api/bloggers/find/{name}");
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {

@@ -1,0 +1,69 @@
+﻿@page
+@model AwesomeBlogFrontEnd.WelcomeModel
+@{
+    ViewData["Title"] = "Welcome";
+}
+
+<h2>Welcome @User.Identity.Name</h2>
+<p>
+    Please finish registration to get access to cool features.
+</p>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input asp-for="Blogger.Email" value="@User.Identity.Name" type="hidden" />
+    <div class="form-group">
+        <label asp-for="Blogger.Name" class="control-label"></label>
+        <div class="row">
+            <div class="col-md-6">
+                <input asp-for="Blogger.Name" class="form-control" />
+            </div>
+        </div>
+        <span asp-validation-for="Blogger.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Blogger.LastName" class="control-label"></label>
+        <div class="row">
+            <div class="col-md-6">
+                <input asp-for="Blogger.LastName" class="form-control" />
+            </div>
+        </div>
+        <span asp-validation-for="Blogger.LastName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Blogger.NickName" class="control-label"></label>
+        <div class="row">
+            <div class="col-md-6">
+                <input asp-for="Blogger.NickName" class="form-control" />
+            </div>
+        </div>
+        <span asp-validation-for="Blogger.NickName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <div class="row">
+            <div class="col-md-6">
+                <input asp-for="Email" disabled class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Blogger.Bio" class="control-label"></label>
+        <div class="row">
+            <div class="col-md-6">
+                <textarea asp-for="Blogger.Bio" class="form-control" rows="8"></textarea>
+            </div>
+        </div>
+        <span asp-validation-for="Blogger.Bio" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

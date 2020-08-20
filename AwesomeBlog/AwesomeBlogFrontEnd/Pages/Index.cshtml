@@ -29,12 +29,11 @@
                         <h3>@article.Title</h3>
                         <h5>Publeshed: @article.Published.ToString("MMMM dd, yyyy.")</h5>
                         <p class="card-text">@(article.Body.Length < 300 ? article.Body : (article.Body.Substring(0, 300) + "..."))</p>
+                        <a asp-page="Article" asp-route-id="@article.Id" style="padding-right: 10px">Read</a>
                         @if (Model.IsAdmin)
                         {
-                            <a asp-page="/EditArticle" asp-route-id="@article.Id" class="btn btn-default btn-xs">Edit</a>
+                            <a asp-page="/EditArticle" asp-route-id="@article.Id">Edit</a>
                         }
-                        <a asp-page="/EditArticle" asp-route-id="@article.Id" class="btn btn-default btn-xs">Edit</a>
-                        <a asp-page="Article" asp-route-id="@article.Id">Read</a>
                     </div>
                 </div>
                 <br />

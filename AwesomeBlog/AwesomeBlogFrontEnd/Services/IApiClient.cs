@@ -10,6 +10,7 @@ namespace AwesomeBlogFrontEnd.Services
     {
         Task<BloggerResponse> GetBloggerAsync(int id);
         Task<BloggerResponse> GetBloggerByNameAsync(string name);
+        Task<bool> AddBloggerAsync(Blogger blogger);
 
         Task<List<Article>> GetArticlesAsync();
         Task<ArticleResponse> GetArticleAsync(int id);

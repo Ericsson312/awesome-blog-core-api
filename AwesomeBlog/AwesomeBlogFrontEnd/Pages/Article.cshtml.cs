@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AwesomeBlogDTO;
 using AwesomeBlogFrontEnd.Services;
@@ -18,7 +19,10 @@ namespace AwesomeBlogFrontEnd
             _apiClient = apiClient;
         }
 
+        [BindProperty]
         public ArticleResponse Article { get; set; }
+
+        [BindProperty]
         public Blogger Blogger { get; set; }
 
         public async Task<ActionResult> OnGetAsync(int id)

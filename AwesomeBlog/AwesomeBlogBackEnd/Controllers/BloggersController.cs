@@ -38,13 +38,13 @@ namespace AwesomeBlogBackEnd.Controllers
             return bloggers;
         }
 
-        // GET: api/bloggers/find/bob911
-        [HttpGet("find/{name}")]
-        public async Task<ActionResult<AwesomeBlogDTO.BloggerResponse>> GetBloggerByName(string name)
+        // GET: api/bloggers/find/email
+        [HttpGet("find/{email}")]
+        public async Task<ActionResult<AwesomeBlogDTO.BloggerResponse>> GetBloggerByName(string email)
         {
             var blogger = await _context.Bloggers.AsNoTracking()
                 .Include(a => a.Articles)
-                .SingleOrDefaultAsync(n => n.NickName == name);
+                .SingleOrDefaultAsync(n => n.Email == email);
 
             if (blogger == null)
             {

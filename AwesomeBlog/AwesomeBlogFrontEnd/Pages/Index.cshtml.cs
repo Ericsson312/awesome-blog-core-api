@@ -23,10 +23,10 @@ namespace AwesomeBlogFrontEnd.Pages
         }
 
         [BindProperty]
-        public IEnumerable<Article> Articles { get; private set; }
+        public List<Article> Articles { get; private set; }
 
         [BindProperty]
-        public IEnumerable<Tag> Tags { get; private set; }
+        public List<Tag> Tags { get; private set; }
 
         [BindProperty]
         public bool IsAdmin { get; set; }
@@ -37,7 +37,7 @@ namespace AwesomeBlogFrontEnd.Pages
 
             Tags = await _apiClient.GetTagsPopularAsync();
 
-            Articles = (await _apiClient.GetArticlesAsync()).OrderByDescending(a => a.Published);
+            Articles = (await _apiClient.GetArticlesAsync()).OrderByDescending(a => a.Published).ToList();
         }
     }
 }
