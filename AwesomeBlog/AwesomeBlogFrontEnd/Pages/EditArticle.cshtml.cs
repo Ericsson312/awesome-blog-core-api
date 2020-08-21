@@ -35,7 +35,7 @@ namespace AwesomeBlogFrontEnd
         [BindProperty]
         public List<SelectListItem> TagsToSelect { get; set; } = new List<SelectListItem>();
 
-        public async Task<ActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -43,7 +43,7 @@ namespace AwesomeBlogFrontEnd
 
                 var isOwner = blogger.Articles.Where(a => a.Id == id).Any();
 
-                if ((!isOwner && !User.IsAdmin()))
+                if (!isOwner && !User.IsAdmin())
                 {
                     return RedirectToPage("./Index");
                 }

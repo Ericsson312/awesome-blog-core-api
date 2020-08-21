@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace AwesomeBlogFrontEnd
 {
-    public class MyDushboardModel : PageModel
+    public class AddArticleModel : PageModel
     {
         public void OnGet()
         {

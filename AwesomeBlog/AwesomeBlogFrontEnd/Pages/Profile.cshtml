@@ -1,0 +1,45 @@
+﻿@page
+@model AwesomeBlogFrontEnd.Profile
+@{
+    ViewData["Title"] = "dushboard";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <h3>Hello @Model.Blogger.NickName</h3><br />
+            <div class="card w-120">
+                <div class="card-header">Your personal info.</div>
+                <div class="card-body">
+                    <p class="card-text"><strong>First Name: </strong>@Model.Blogger.Name</p>
+                    <p class="card-text"><strong>Last Name: </strong>@Model.Blogger.LastName</p>
+                    <p class="card-text"><strong>Email: </strong>@Model.Blogger.Email</p>
+                    <p class="card-text"><strong>Bio: </strong>@Model.Blogger.Bio</p>
+                </div>
+            </div>
+            <br />
+            <button class="btn btn-primary w-45 float-right mt-2">Add New</button>
+        </div>
+        <div class="col-8">
+            <h3>Your Articles</h3><br />
+            @if (Model.Articles.Count > 0)
+            {
+                <div class="dashboard-scroll">
+                    @foreach (var article in Model.Articles)
+                    {
+                        <div class="list-group-item list-group-item-action flex-column align-items-start mb-1">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">@article.Title</h5>
+                                <small>@((DateTime.Now - article.Published).TotalDays > 1 ? ((int)(DateTime.Now - article.Published).TotalDays) + " day(s) ago" : "New") </small>
+                            </div>
+                            <p class="mb-1">@(article.Body.Length < 150 ? article.Body : (article.Body.Substring(0, 150) + "..."))</p>
+                            <small>@article.Published.ToString("MMMM dd, yyyy.")</small><br />
+                            <a asp-page="Article" asp-route-id="@article.Id" style="padding-right: 10px">Read</a>
+                            <a asp-page="/EditArticle" asp-route-id="@article.Id">Edit</a>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

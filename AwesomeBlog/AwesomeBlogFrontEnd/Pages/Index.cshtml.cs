@@ -31,9 +31,18 @@ namespace AwesomeBlogFrontEnd.Pages
         [BindProperty]
         public bool IsAdmin { get; set; }
 
+        [BindProperty]
+        public int UserId { get; set; }
+
         public async Task OnGetAsync()
         {
             IsAdmin = User.IsAdmin();
+
+            if (User.IsBlogger())
+            {
+                var blogger = await _apiClient.GetBloggerByNameAsync(User.Identity.Name);
+                UserId = blogger.Id;
+            }
 
             Tags = await _apiClient.GetTagsPopularAsync();
 
