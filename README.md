@@ -5,8 +5,10 @@ A full-featured ASP.NET Core application for bloggers where users can post diffe
 1. In Visual Studio, select the Tools -> NuGet Package Manager -> Package Manager Console
 2. For each project run the following commands in the Package Manager Console
 
->Add-Migration Initial
->Update-Database
+```console
+   Add-Migration Initial
+   Update-Database
+   ```
 
 ### Application Architecture
 ![Architecture Diagram](/docs/awesomeblog-architecture-diagram.jpg)
