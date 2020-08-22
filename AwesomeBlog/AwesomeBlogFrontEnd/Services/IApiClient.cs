@@ -14,7 +14,7 @@ namespace AwesomeBlogFrontEnd.Services
 
         Task<List<Article>> GetArticlesAsync();
         Task<ArticleResponse> GetArticleAsync(int id);
-        Task<bool> AddArticleAsync(Article article);
+        Task<Article> AddArticleAsync(Article article);
         Task PutArticleAsync(Article article);
         Task DeleteArticle(int id);
 

@@ -74,32 +74,8 @@ namespace AwesomeBlogFrontEnd
             }
             else
             {
-                RedirectToPage("./Login");
+                RedirectToPage("./Account/Login");
             }
-
-            //var article = await _apiClient.GetArticleAsync(id);
-
-            //Article = new Article
-            //{
-            //    Id = article.Id,
-            //    Title = article.Title,
-            //    Body = article.Body,
-            //    Published = article.Published,
-            //    BloggerId = article.BloggerId
-            //};
-
-            //var tags = await _apiClient.GetTagsAsync();
-
-            //TagsToSelect = tags.Select(t => new SelectListItem
-            //{
-            //    Value = t.Id.ToString(),
-            //    Text = t.Name
-            //}).ToList();
-
-            //foreach (var tag in article.Tags)
-            //{
-            //    SelectedTagsId.Add(tag.Id);
-            //}
 
             return Page();
         }
@@ -111,7 +87,7 @@ namespace AwesomeBlogFrontEnd
                 return Page();
             }
 
-            Message = "Session updated successfully!";
+            Message = "Article was updated successfully!";
 
             await _apiClient.PutArticleAsync(Article);
 
@@ -139,16 +115,16 @@ namespace AwesomeBlogFrontEnd
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var session = await _apiClient.GetArticleAsync(id);
+            var article = await _apiClient.GetArticleAsync(id);
 
-            if (session != null)
+            if (article != null)
             {
                 await _apiClient.DeleteArticle(id);
             }
 
-            Message = "Session deleted successfully!";
+            Message = "Article was deleted successfully!";
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("./Profile");
         }
     }
 }

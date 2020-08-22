@@ -28,12 +28,12 @@ namespace AwesomeBlogFrontEnd
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToPage("./Index");
+                return RedirectToPage("./Account/Login");
             }
 
             var blogger = await _apiClient.GetBloggerByNameAsync(User.Identity.Name);
 
-            Articles = blogger.Articles.ToList();
+            Articles = blogger.Articles.OrderByDescending(date => date.Published).ToList();
 
             Blogger = new Blogger
             {

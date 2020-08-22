@@ -18,18 +18,18 @@ namespace AwesomeBlogFrontEnd.Services
             _httpClient = httpClient;
         }
 
-        public async Task<bool> AddArticleAsync(Article article)
+        public async Task<Article> AddArticleAsync(Article article)
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/articles/{article.BloggerId}", article);
 
             if (response.StatusCode == HttpStatusCode.Conflict)
             {
-                return false;
+                return null;
             }
 
             response.EnsureSuccessStatusCode();
 
-            return true;
+            return await response.Content.ReadAsAsync<Article>();
         }
 
         public async Task<bool> AddBloggerAsync(Blogger blogger)
@@ -41,7 +41,7 @@ namespace AwesomeBlogFrontEnd.Services
                 return false;
             }
 
-            //response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
             return true;
         }
