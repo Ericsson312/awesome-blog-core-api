@@ -109,6 +109,20 @@ namespace AwesomeBlogFrontEnd.Services
             return await response.Content.ReadAsAsync<List<Article>>();
         }
 
+        public async Task<List<Article>> GetArticlesByTagIdAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/articles/tag/{id}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsAsync<List<Article>>();
+        }
+
         public async Task<BloggerResponse> GetBloggerAsync(int id)
         {
             var response = await _httpClient.GetAsync($"/api/bloggers/{id}");

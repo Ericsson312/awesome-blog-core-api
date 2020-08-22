@@ -1,43 +1,43 @@
-﻿@page
+﻿@page 
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
-    <div class="resent-articles">
-        <div class="popular-tags">
-            <div class="popular-tags-header">
-                <h5>People looking for:</h5>
-            </div>
-            <div class="popular-tags-body">
-                <ul class="nav nav-pills mb-3">
-                    @foreach (var tag in Model.Tags)
-                    {
-                        <li role="presentation" class="nav-item">
-                            <a class="nav-link" asp-route-tag="@tag.Id">#@tag.Name?.ToString()</a>
-                        </li>
-                    }
-                </ul>
-            </div>
+<div class="resent-articles">
+    <div class="popular-tags">
+        <div class="popular-tags-header">
+            <h5>People looking for:</h5>
         </div>
-        <div class="container">
-            <h4><small>RECENT POSTS</small></h4>
-            <hr>
-            @foreach (var article in Model.Articles)
-            {
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3>@article.Title</h3>
-                        <h5>Publeshed: @article.Published.ToString("MMMM dd, yyyy.")</h5>
-                        <p class="card-text">@(article.Body.Length < 300 ? article.Body : (article.Body.Substring(0, 300) + "..."))</p>
-                        <a asp-page="Article" asp-route-id="@article.Id" style="padding-right: 10px">Read</a>
-                        @if (Model.IsAdmin || Model.UserId == article.BloggerId)
-                        {
-                            <a asp-page="/EditArticle" asp-route-id="@article.Id">Edit</a>
-                        }
-                    </div>
-                </div>
-                <br />
-                <br />
-            }
+        <div class="popular-tags-body">
+            <ul class="nav nav-pills mb-3">
+                @foreach (var tag in Model.Tags)
+                {
+                    <li role="presentation" class="nav-item">
+                        <a class="nav-link" asp-route-tag="@tag.Id">#@tag.Name?.ToString()</a>
+                    </li>
+                }
+            </ul>
         </div>
     </div>
+    <div class="container">
+        <h4><small>RECENT POSTS</small></h4>
+        <hr>
+        @foreach (var article in Model.Articles)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>@article.Title</h3>
+                    <h5>Publeshed: @article.Published.ToString("MMMM dd, yyyy.")</h5>
+                    <p class="card-text">@(article.Body.Length < 300 ? article.Body : (article.Body.Substring(0, 300) + "..."))</p>
+                    <a asp-page="Article" asp-route-id="@article.Id" style="padding-right: 10px">Read</a>
+                    @if (Model.IsAdmin || Model.UserId == article.BloggerId)
+                    {
+                        <a asp-page="/EditArticle" asp-route-id="@article.Id">Edit</a>
+                    }
+                </div>
+            </div>
+            <br />
+            <br />
+        }
+    </div>
+</div>

@@ -14,9 +14,9 @@
                 <ul class="nav nav-pills mb-3">
                     @foreach (var tag in Model.Article.Tags)
                     {
-                        <li role="presentation" class="nav-item">
-                            <a class="nav-link" asp-route-tag="@tag.Id">#@tag.Name?.ToString()</a>
-                        </li>
+                    <li role="presentation" class="nav-item">
+                        <a class="nav-link" asp-page="/Index" asp-route-tag="@tag.Id">#@tag.Name?.ToString()</a>
+                    </li>
                     }
                 </ul>
                 <p class="card-text">@Model.Article.Body</p>

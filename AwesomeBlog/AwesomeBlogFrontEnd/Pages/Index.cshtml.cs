@@ -34,7 +34,7 @@ namespace AwesomeBlogFrontEnd.Pages
         [BindProperty]
         public int UserId { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int tag)
         {
             IsAdmin = User.IsAdmin();
 
@@ -46,7 +46,15 @@ namespace AwesomeBlogFrontEnd.Pages
 
             Tags = await _apiClient.GetTagsPopularAsync();
 
-            Articles = (await _apiClient.GetArticlesAsync()).OrderByDescending(a => a.Published).ToList();
+            if (tag != 0)
+            {
+                Articles = (await _apiClient.GetArticlesByTagIdAsync(tag)).OrderByDescending(a => a.Published).ToList();
+            }
+            else
+            {
+                Articles = (await _apiClient.GetArticlesAsync()).OrderByDescending(a => a.Published).ToList();
+            }
+
         }
     }
 }

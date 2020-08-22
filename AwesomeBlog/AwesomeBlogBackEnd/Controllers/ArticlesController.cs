@@ -39,6 +39,26 @@ namespace AwesomeBlogBackEnd.Controllers
             return articles;
         }
 
+        // GET: api/articles/tag/id
+        [HttpGet("tag/{id}")]
+        public async Task<ActionResult<List<AwesomeBlogDTO.Article>>> GetArticleByTagId(int id)
+        {
+
+            var articles = await _context.Articles.OrderByDescending(t => t.ArticleTags.Count)
+                .Where(t => t.ArticleTags.Any(t => t.TagId == id))
+                .Select(a => new AwesomeBlogDTO.Article
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Body = a.Body,
+                    BloggerId = a.BloggerId,
+                    Published = a.Published
+                })
+                .ToListAsync();
+
+            return articles;
+        }
+
         // GET: api/articles/1
         [HttpGet("{id}")]
         public async Task<ActionResult<AwesomeBlogDTO.ArticleResponse>> GetArticle(int id)

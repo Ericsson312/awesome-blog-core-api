@@ -13,6 +13,7 @@ namespace AwesomeBlogFrontEnd.Services
         Task<bool> AddBloggerAsync(Blogger blogger);
 
         Task<List<Article>> GetArticlesAsync();
+        Task<List<Article>> GetArticlesByTagIdAsync(int id);
         Task<ArticleResponse> GetArticleAsync(int id);
         Task<Article> AddArticleAsync(Article article);
         Task PutArticleAsync(Article article);
